@@ -1,0 +1,408 @@
+@import url(http://fonts.googleapis.com/css?family=Muli);
+html{
+    min-width: 600px;
+}
+body {
+    min-width: 600px;
+    margin: 0;
+    padding: 0;
+    font-family: helvetica, sans-serif;
+}
+
+p {
+    line-height: 1.8;
+}
+
+a {
+    color: #0400ff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ff0000;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Muli', sans-serif;
+    font-weight: normal;
+}
+
+h1 {
+    border-bottom: 1px solid #bbb;
+    padding: 0 0 10px 0;
+    margin: 10px 0 20px 0;
+}
+
+h1 p {
+    text-indent: 50px;
+    margin: 0 0 0 0;
+    font-size: 50%;
+}
+
+h2 {
+    margin: 30px 0 20px;
+}
+
+ol {
+    line-height: 1.5;
+}
+
+#header {
+    min-width: 600px;
+    padding: 10px 10%;
+    font-size: 20px;
+    background: #12c064;
+    color: #fff;
+    border-bottom: 4px solid #dfad00;
+    overflow: auto;
+}
+
+#header .logo {
+    font-family: 'Muli', sans-serif;
+    float: left;
+    color: #f3f7cc;
+    font-size: 24px;
+    margin-right: 5%;
+}
+
+#profile_image {
+    padding: 10px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    z-index: 1;
+}
+
+#header ul.menu {
+    list-style: none;
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
+#header ul.menu li {
+    float: left;
+    padding: 4px 10px;
+}
+
+#header ul.menu li.selected a, #header ul.menu li.selected a:hover {
+    color: #1b6d32;
+    font-weight: bold;
+}
+
+#header a {
+    color: #f3f7cc;
+}
+
+#header a:hover {
+    color: #ff0000;
+}
+
+#header .user {
+    float: right;
+    padding-top: 4px;
+}
+
+#content {
+    padding: 30px 100px;
+}
+
+ /*forms */
+form {
+    overflow: auto;
+}
+
+form p {
+    width: 100%;
+    overflow: auto;
+    clear: both;
+}
+
+.pro p a{
+    clear: both;
+    display: block;
+}
+.aut p label{
+    float: left;
+    clear: both;
+    display: block;
+}
+.aut p input{
+    float: left;
+    clear: both;
+    display: block
+}
+
+
+label {
+    clear: both;
+    display: inline;
+    /*float: left;*/
+    color: #333;
+    margin-bottom: 4px;
+}
+
+input, textarea {
+    clear: both;
+    display: inline;
+    /*float: left;*/
+    margin: 0;
+    background: #efefef;
+    border: 0;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+input[type=submit], a.button {
+    font-weight: bold;
+    background: #12c064;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.errorlist {
+    color: #cc0033;
+    float: left;
+    clear: both;
+    padding-left: 10px;
+}
+
+.helptext {
+    margin: 0 0 20px 0;
+    color: #aaa;
+    clear: both;
+    display: inline;
+    float: left;
+    font-size: 13px;
+}
+
+
+.login-form {
+    float: left;
+}
+.login-form form p input{
+    display: block;
+}
+.register-form {
+    float: left;
+}
+.register-form form p input{
+    display: block;
+}
+
+.reset_form {
+    float: left;
+}
+.reset_form form p input{
+    display: block;
+}
+
+/* social-auth */
+.social {
+    float: right;
+}
+
+.social li {
+    list-style: none;
+    padding: 10px 20px;
+    margin: 0 0 10px 0;
+}
+
+.social li a {
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: #fff;
+}
+
+.social li.facebook {
+    background: #3b5399;
+}
+
+.social li.twitter {
+    background: #00cffa;
+}
+
+.social li.google {
+    background: #de1710;
+}
+
+
+input.button1 {
+    display: inline-block;
+    color: black;
+    font-size: 125%;
+    font-weight: 700;
+    text-decoration: none;
+    user-select: none;
+    padding: .25em .5em;
+    outline: none;
+    border: 1px solid rgb(250, 172, 17);
+    border-radius: 7px;
+    background: rgb(255, 212, 3) linear-gradient(rgb(255, 212, 3), rgb(248, 157, 23));
+    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0), inset 0 1px 2px rgba(0, 0, 0, 0), inset 0 0 0 60px rgba(255, 255, 0, 0);
+    transition: box-shadow .2s, border-color .2s;
+}
+
+input.button1:hover {
+    box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0), inset 0 1px 2px rgba(0, 0, 0, 0), inset 0 0 0 60px rgba(255, 255, 0, .5);
+}
+
+input.button1:active {
+    padding: calc(.25em + 1px) .5em calc(.25em - 1px);
+    border-color: rgba(177, 159, 0, 1);
+    box-shadow: inset 0 -1px 1px rgba(0, 0, 0, .1), inset 0 1px 2px rgba(0, 0, 0, .3), inset 0 0 0 60px rgba(255, 255, 0, .45);
+}
+
+input.button2 {
+    display: inline-block;
+    color: black;
+    font-weight: 700;
+    text-decoration: none;
+    user-select: none;
+    padding: .25em .5em;
+    outline: none;
+    border: 1px solid rgb(250, 172, 17);
+    border-radius: 7px;
+    background: rgb(130, 212, 3) linear-gradient(rgb(130, 212, 3), rgb(130, 157, 23));
+    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0), inset 0 1px 2px rgba(0, 0, 0, 0), inset 0 0 0 60px rgba(255, 255, 0, 0);
+    transition: box-shadow .2s, border-color .2s;
+}
+
+input.button2:hover {
+    box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0), inset 0 1px 2px rgba(0, 0, 0, 0), inset 0 0 0 60px rgba(255, 255, 0, .5);
+}
+
+input.button2:active {
+    padding: calc(.25em + 1px) .5em calc(.25em - 1px);
+    border-color: rgba(177, 159, 0, 1);
+    box-shadow: inset 0 -1px 1px rgba(0, 0, 0, .1), inset 0 1px 2px rgba(0, 0, 0, .3), inset 0 0 0 60px rgba(255, 255, 0, .45);
+}
+
+.serial_name {
+    font-weight: bold;
+}
+
+.serial_name_link {
+    color: #000000;
+    text-decoration: none;
+}
+
+.pagination {
+    margin-top: 40px;
+}
+
+.pagination a {
+    font-weight: bold;
+    color: #01a220;
+}
+.pagination a:hover {
+    color: #ff0000;
+}
+
+
+.vibor {
+    width: 300px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px dotted gray;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.custom-dropdown {
+    cursor: pointer;
+    background-color: #2980b9;
+    color: #fff;
+    font-size: inherit;
+    padding: .5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+    border-radius: 3px;
+}
+
+.search {
+    width: 350px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px dotted gray;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.search form input {
+    float: right;
+}
+
+.round {
+    max-height: 100px;
+    max-width: 100px;
+    margin: 0px 10px 0px 0px; /* Отступы вокруг картинки */
+}
+
+.round2 {
+    max-height: 400px;
+    max-width: 400px;
+    display: inline;
+    margin: 0px 10px 10px 0px;
+}
+
+.serial {
+    margin: 0px 0px 30px 0px;
+}
+
+.sim_im {
+    max-height: 100px;
+    max-width: 100px;
+}
+.serial_one{
+    min-width: 600px;
+    width: 100%;
+    display: inline-block;
+}
+
+.kinopoisk_info{
+    margin: 0px 0px 20px 0px;
+}
+.kinopoisk_info div{
+    margin: 0px 0px 10px 0px;
+}
+
+.myseria_info{
+    margin: 0px 0px 20px 0px;
+}
+.myseria_info div{
+    margin: 0px 0px 10px 0px;
+}
+
+.update_info{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    clear: both;
+    display: block;
+}
+
+.like_serial{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: block;
+    clear: both;
+}
+
+.similar_serials{
+    min-width: 500px;
+    table-layout: fixed;
+    text-align: center;
+    overflow: auto;
+    display: block;
+}
+.similar_serial{
+    text-align: center;
+    height: 200px;
+    padding: 10px;
+}

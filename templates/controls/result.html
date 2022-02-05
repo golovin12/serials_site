@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Управление{% endblock %}
+{% block content %}
+    {% if type == "create_serials" %}
+        <h1>Итог добавления в базу данных:</h1>
+        <p>В базу данных успешно добавлено {{ point }}</p>
+    {% else %}
+        <h1>Итог Обновления данных:</h1>
+        <p>В базе данных успешно обновлено {{ point }} записей</p>
+    {% endif %}
+{% endblock %}

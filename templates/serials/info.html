@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Информация о сериале{% endblock %}
+{% block content %}
+    <h1>Информация по сериалу {{ serial.title }}:</h1>
+    <div class="serial_one">
+            <div class="serial_poster">
+                {% if serial.posterLink != 'No_poster' and serial.posterLink != 'User_image' %}
+                    {% if serial.posterImage.name != '' %}
+                        <img src="{{ serial.posterImage.url }}" border="3px solid #ccc" class="round2" align="left">
+                    {% endif %}
+                {% else %}
+                    <img src="{% static 'img/noserial.jpg' %}" border="3px solid #ccc" class="round2" align="left">
+                {% endif %}
+            </div>
+        <div class="kinopoisk_info">
+            <div class="serial_rating">Рейтинг Кинопоиска: {{ serial.rating }}</div>
+            {% if serial.serialYearEnd == 9999 %}
+                <div class="serial_year">Год: {{ serial.serialYearStart }}-...</div>
+            {% else %}
+                <div class="serial_year">Год: {{ serial.serialYearStart }}-{{ serial.serialYearEnd }}</div>
+            {% endif %}
+            <div class="serial_countries">Страна: {{ serial.countries }}</div>
+            <div class="serial_rating"><a href="{{ serial.serialLinkKino }}">Ссылка на сериал в Кинопоиске.</a></div>
+            <div class="serial_genres">
+                Жанр:{{ serial.get_genres }}
+            </div>
+        </div>
+        <div class="myseria_info">
+            {% if serial_info %}
+                <div class="serial_myseria_description">Описание: {{ serial_info.MySeriadescription }}</div>
+                <div class="serial_myseria_rating">Рейтинг MySeria: {{ serial_info.MySeriarating }}</div>
+                <div class="serial_myseria_last">Последняя серия на MySeria: <a href="{{ serial_info.LastSeriaurl }}">{{ serial_info.LastSerianame }}</a></div>
+                <div class="serial_myseria_voices">Вышедшие озвучки на MySeria: {{ serial_info.LastSeriavoice }}</div>
+            {% endif %}
+        <div>
+    </div>
+    {% if request.user.is_authenticated and serial.serialYearEnd == 9999%}
+        <div class="update_info">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="slug" value="{{ serial.slug }}"/>
+                <input type="hidden" name="referer" value="{{ referer }}"/>
+                <input type="submit" class = "button1" value="Обновить информацию с MySeria"/>
+            </form>
+        </div>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+        <div class="like_serial">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="slug" value="{{ serial.slug }}"/>
+                <input type="hidden" name="referer" value="{{ referer }}"/>
+                <input type="submit" name="like" class = "button1" value="{{ like }}"/>
+            </form>
+        </div>
+    {% endif %}
+    <h2>Похожие сериалы: </h2>
+    <div>
+    <table class="similar_serials">
+        {% for sim_ser in similar_serials %}
+            <td>
+            <div class="similar_serial"><a class="serial_name_link" href='{% url 'serials:info' %}?name={{ sim_ser.slug }}'>
+            {% if sim_ser.posterLink != 'No_poster' %}
+                {% if sim_ser.posterImage.name != '' %}
+                    <img src="{{ sim_ser.posterImage.url }}" border="3px solid #ccc" class="sim_im" >
+                {% else %}
+                    <img src="{% static 'img/noload.jpg' %}" border="3px solid #ccc" class="sim_im" >
+                {% endif %}
+            {% else %}
+                <img src="{% static 'img/noserial.jpg' %}" border="3px solid #ccc" class="sim_im" >
+            {% endif %}
+            <div class="serial_name">{{ forloop.counter}}. {{ sim_ser.title }}</a></div>
+            </div></td>
+        {% endfor %}
+    </table>
+    </div>
+{% endblock %}

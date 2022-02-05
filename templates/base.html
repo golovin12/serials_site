@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link href="{% static "css/base.css" %}" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="{% static "img/favicon.ico" %}" type="image/x-icon"/>
+    </head>
+    <body>
+        <style>
+            .profile_img {
+                float: right;
+                min-height: 10px;
+                max-height: 100px;
+                min-width: 10px;
+                max-width: 100px;
+                border-radius: 30px;
+            }
+        </style>
+        <div id="header">
+            <span class="logo">
+                <a href="{% url 'serials:categories' %}">Сериалы</a>
+            </span>
+                <ul class="menu">
+                    <li {% if section == "all_serials" %} class="selected"{% endif %}>
+                        <a href="{% url 'serials:categories' %}">Все сериалы</a>
+                    </li>
+                    <li {% if section == "Поиск" %}class="selected"{% endif %}>
+                        <a href="{% url "serials:popular" %}">Популярные сериалы</a>
+                    </li>
+                    {% if request.user.is_authenticated %}
+                    <li {% if section == "my_serials" %}class="selected"{% endif %}>
+                        <a href="{% url "subscribes:subscribe" %}">Мои сериалы</a>
+                    </li>
+                    <li {% if section == "my_recommend" %}class="selected"{% endif %}>
+                        <a href="{% url "subscribes:recommend" %}">Рекомендации для вас</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            <span class="user">
+                {% if request.user.is_authenticated %}
+                    Привет {{ request.user.username }},
+                    <a href="{% url "authorization:logout" %}">Выйти</a>
+                {% else %}
+                    <a href="{% url "authorization:login" %}">Войти</a>
+                {% endif %}
+            </span>
+            {% if request.user.is_authenticated %}
+                {% if request.user.profile.photo %}
+                    <div id="profile_image">
+                        {% with request.user.profile.photo as im %}
+                            <a href="{% url "authorization:edit_profile" %}">
+                                <img src="{{ im.url }}" border="3px solid #ccc" alt="Profile image" class="profile_img">
+                            </a>
+                        {% endwith %}
+                    </div>
+                {% else %}
+                    <div id="profile_image">
+                        <a href="{% url "authorization:edit_profile" %}">
+                            <img src="{% static 'img/noprofile.jpg' %}" class="profile_img" alt="Profile image">
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+{#        <form method="post">#}
+{#            {% csrf_token %}#}
+{#            {{ form }}#}
+{#            <input type="submit" class="button2" value="Добавить">#}
+{#        </form>#}
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

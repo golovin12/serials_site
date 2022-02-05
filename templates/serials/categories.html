@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load filter_tag %}
+{% load static %}
+{% block title %}
+    {% if context == "categories" %}
+        Категории
+    {% elif context == "top" %}
+        Популярные сериалы
+    {% elif context == "subscribe" %}
+        Понравившиеся сериалы
+    {% endif %}
+{% endblock %}
+{% block content %}
+    {{ filter_form }}
+    {% if context == "categories" or context == "subscribe" %}
+        <div class="options">
+            {% if context == "subscribe" %}
+                <h1>Ниже представлены сериалы, которые вам понравились.</h1>
+            {% endif %}
+            {% filter_form vihod link %}
+            <h1>По запросу: {% for i in zapros %}<p>{{ i }}</p>{% endfor %}найдено {{ page_serials.paginator.count }} сериалов:</h1>
+        </div>
+    {% elif context == "top" %}
+        <h1>Ниже представлен топ самых просматриваемых сериалов на сайте.</h1>
+    {% elif context == "recommend" %}
+        <h1>Ниже представлены рекомендуемые сериалы, на основе ваших лайков.</h1>
+    {% endif %}
+    <div class="page_serials">
+        {% for serial in page_serials %}
+            <div class="serial">
+                <a class="serial_name_link" href='{% url 'serials:info' %}?name={{ serial.slug }}'>
+                {% if serial.posterLink != 'No_poster' and serial.posterLink != 'User_image' %}
+                    {% if serial.posterImage.name != '' %}
+                        <img src="{{ serial.posterImage.url }}" border="3px solid #ccc" class="round" align="left">
+                    {% else %}
+                        <img src="{% static 'img/noload.jpg' %}" border="3px solid #ccc" class="round" align="left">
+                    {% endif %}
+                {% else %}
+                    <img src="{% static 'img/noserial.jpg' %}" border="3px solid #ccc" class="round" align="left">
+                {% endif %}
+                <div class="serial_name">{{ forloop.counter|add:page}}. {{ serial.title }}</a></div>
+                <div class="serial_rating">Рейтинг Кинопоиска: {{ serial.rating }}</div>
+                {% if serial.serialYearEnd == 9999 %}
+                <div class="serial_year">Год: {{ serial.serialYearStart }}-...</div>
+                {% else %}
+                    <div class="serial_year">Год: {{ serial.serialYearStart }}-{{ serial.serialYearEnd }}</div>
+                {% endif %}
+                <div class="serial_countries">Страна: {{ serial.countries }}</div>
+                <div class="serial_genres">
+                     Жанр:{{ serial.get_genres }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% include 'pagination.html' with posts=page_serials chars=vihod %}
+{% endblock %}

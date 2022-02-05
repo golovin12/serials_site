@@ -1,0 +1,24 @@
+<div class="pagination">
+    <span class="step-links">
+    Страницы:
+        {% if posts.has_previous %}
+            <a href="?page=1{{ chars }}">Начало</a>
+            <a href="?page={{ posts.previous_page_number }}{{ chars }}">&laquo;</a>
+        {% endif %}
+        <span class="current">
+            {% for i in posts.paginator.page_range %}
+                {% if i > posts.number|add:-4 and i < posts.number|add:4 %}
+                    {% if posts.number == i %}
+                        {{ i }}
+                    {% else %}
+                        <a href="?page={{ i }}{{ chars }}">{{ i }}</a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </span>
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}{{ chars }}">&raquo;</a>
+            <a href="?page={{ posts.paginator.num_pages }}{{ chars }}">Конец</a>
+        {% endif %}
+    </span>
+</div>

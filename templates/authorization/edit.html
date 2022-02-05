@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Редактирование аккаунта{% endblock %}
+{% block content %}
+    <h1>Редактирование учётной записи</h1>
+    <p>Вы можете редактировать свою учетную запись, используя следующую форму:</p>
+    <form action="." method="post" enctype="multipart/form-data">
+        <div class="aut">
+            {{ user_form.as_p }}
+        </div>
+        <div class="pro">
+            {{ profile_form.as_p }}
+        </div>
+        {% csrf_token %}
+        <p><input type="submit" class = "button2" value="Сохранить изменения"></p>
+    </form>
+    <a href="{% url "authorization:password_change" %}">Изменить пароль</a>
+{% endblock %}

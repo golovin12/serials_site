@@ -1,0 +1,22 @@
+{% load filter_tag %}
+<div style="text-align: right;">
+    <div class="search">
+        <form method="get" action=".">
+            <table>{% search_form %}<input type="submit" class = "button1" value="Поиск"></table>
+        </form>
+    </div>
+</div>
+{% for items in formes %}
+    <div class="vibor">
+        {{ items.0 }}:
+        <select class="custom-dropdown" name="{{items.1}}" onChange="window.location='{% url link %}?{{ vihod }}&{{items.1}}='+this.value;">
+            <option disabled selected>Выберите</option>
+            {% if items.1 == "category" %}
+                <option value="all">все</option>
+            {% endif %}
+            {% for i in items.2 %}
+                <option value="{{ i.1 }}">{{ i.0 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+{% endfor %}
