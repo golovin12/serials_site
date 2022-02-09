@@ -30,10 +30,11 @@ def categories(request):
                       {'context': 'categories', 'zapros': "все сериалы", 'page_serials': page_serials, "page": 0})
 
 
-def info(request):
+def info(request, slug):
     # Вывод онформации о сериале
     if request.method == "GET":
-        slug = request.GET.get("name")
+        # slug = request.GET.get("name")
+        slug = slug
         serial = get_object_or_404(Serial, published=True, slug=slug)
         serial_info = Serial_info.objects.filter(serial=serial.id)
         # Загружает дополнительную информацию с сайта MySeria, если такая есть
@@ -62,7 +63,7 @@ def info(request):
                       {'serial': serial, 'serial_info': serial_info, "similar_serials": similar_serials})
     # Обновляет дополнительную информацию с сайта MySeria, если такая есть
     elif request.method == "POST":
-        slug = request.POST.get("slug")
+        slug = slug
         like = request.POST.get("like")
         if request.user.is_authenticated and like is not None:
             serial = get_object_or_404(Serial, published=True, slug=slug)

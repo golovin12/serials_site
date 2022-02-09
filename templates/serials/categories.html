@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load filter_tag %}
+{% is_admin request as admin %}
 {% load static %}
 {% block title %}
     {% if context == "categories" %}
@@ -28,8 +29,9 @@
     <div class="page_serials">
         {% for serial in page_serials %}
             <div class="serial">
-                <a class="serial_name_link" href='{% url 'serials:info' %}?name={{ serial.slug }}'>
-                {% if serial.posterLink != 'No_poster' and serial.posterLink != 'User_image' %}
+{#                <a class="serial_name_link" href='{% url 'serials:info' %}?name={{ serial.slug }}'>#}
+                <a class="serial_name_link" href='{% url 'serials:info' slug=serial.slug %}'>
+                {% if serial.posterLink != 'No_poster' %}
                     {% if serial.posterImage.name != '' %}
                         <img src="{{ serial.posterImage.url }}" border="3px solid #ccc" class="round" align="left">
                     {% else %}
@@ -39,6 +41,11 @@
                     <img src="{% static 'img/noserial.jpg' %}" border="3px solid #ccc" class="round" align="left">
                 {% endif %}
                 <div class="serial_name">{{ forloop.counter|add:page}}. {{ serial.title }}</a></div>
+                {% if admin %}
+                    <div style="float: right">
+                        <a href="{% url 'controls:edit' slug=serial.slug %}"><input style="" type="button" class='button1' value="РЕДАКТИРОВАТЬ"/></a>
+                    </div>
+                {% endif %}
                 <div class="serial_rating">Рейтинг Кинопоиска: {{ serial.rating }}</div>
                 {% if serial.serialYearEnd == 9999 %}
                 <div class="serial_year">Год: {{ serial.serialYearStart }}-...</div>
@@ -47,7 +54,7 @@
                 {% endif %}
                 <div class="serial_countries">Страна: {{ serial.countries }}</div>
                 <div class="serial_genres">
-                     Жанр:{{ serial.get_genres }}
+                     Жанр: {{ serial.get_genres }}
                 </div>
             </div>
         {% endfor %}

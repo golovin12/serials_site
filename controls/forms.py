@@ -5,22 +5,16 @@ from serials.models import Serial
 import datetime
 
 
+class CheckDeleteForm(forms.Form):
+    check_delete = forms.ChoiceField(label='Поставьте галочку для удаления', widget=forms.CheckboxInput)
+
+
 class SerialsForm(forms.ModelForm):
     class Meta:
         model = Serial
         fields = ('title', 'rating', 'serialYearStart', 'serialYearEnd', 'countries', 'serialLinkKino', 'posterLink',
                   'posterImage', 'genres', 'published')
-
-
-    def clean_posterImage(self):
-        cd = self.cleaned_data
-        if cd['posterLink'][:4] != "http" and cd['posterLink'] != 'No_poster':
-            if cd['posterLink'] == 'User_image' and cd['posterImage'] != False:
-                return cd['posterLink']
-            if cd['posterLink'] == 'User_image' and cd['posterImage'] == False:
-                raise forms.ValidationError('Вы не добавили постер.')
-            raise forms.ValidationError('Вы указали некорректную ссылку на постер.')
-        return cd['posterImage']
+        widgets = {'posterImage': forms.ClearableFileInput}
 
 
     def clean_serialLinkKino(self):
@@ -50,8 +44,6 @@ class SerialsForm(forms.ModelForm):
     def clean_genres(self):
         cd = self.cleaned_data
         tags = [i['name'] for i in Tag.objects.all().values('name')]
-        print(tags)
-        print(cd['genres'])
         for i in cd['genres']:
             if i not in tags:
                 raise forms.ValidationError('Вы указали некорректный жанр сериала.')

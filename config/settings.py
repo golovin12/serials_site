@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
 
     'taggit',
+    'debug_toolbar',
 
     'controls.apps.ControlsConfig',
     'serials.apps.SerialsConfig',
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -118,4 +120,8 @@ DEFAULT_CHARSET = 'utf-8'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]

@@ -27,6 +27,7 @@ class Serial(models.Model):
         return ", ".join([i.name for i in self.genres.all()])
 
 
+
 class Serial_info(models.Model):
     serial = models.OneToOneField(Serial, on_delete=models.CASCADE, primary_key=True, verbose_name="Serial_id")
     MySeriadescription = models.TextField(blank=True, verbose_name="Описание сериала")

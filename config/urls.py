@@ -10,6 +10,7 @@ urlpatterns = [
     path('subscribes/', include('subscribes.urls', namespace='subscribes')),
     path('serials/', include('serials.urls', namespace='serials')),
     path('controls/', include('controls.urls', namespace='controls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 

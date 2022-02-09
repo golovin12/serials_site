@@ -1,14 +1,20 @@
 import json
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, UpdateView, CreateView, DeleteView
 from pytils.translit import slugify
 from taggit.models import Tag
 
+from serials.filters_serials import filters_serials
 from serials.models import Serial
 from .forms import SerialsForm
 
+
+# Декоратор, отвечающий за проверку принадлежности юзера к группе админа.
 def user_groups_Admin(func):
     def proverka(request):
         if request.user.groups.filter(name="Admin_for_site").exists():
@@ -17,6 +23,115 @@ def user_groups_Admin(func):
             raise Http404("У вас нет доступа.")
 
     return proverka
+
+
+def clean_posterLink(info):
+    cd = info
+    if cd['posterLink'][:4] != "http" and cd['posterLink'] != 'No_poster':
+        if cd['posterLink'] == 'User_image' and cd['posterImage'] != None:
+            return cd['posterLink']
+        if cd['posterLink'] == 'User_image' and cd['posterImage'] == None:
+            return False
+        return False
+    return cd['posterLink']
+
+
+class ListSerials(UserPassesTestMixin, ListView):
+    # template_name = 'controls/add.html'
+    template_name = 'serials/categories.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name="Admin_for_site").exists()
+
+    def get_queryset(self):
+        self.published = Serial.objects.all()
+        return self.published
+
+    def get_context_data(self, **kwargs):
+        link = 'controls:all'
+        name = 'categories'
+        context = filters_serials(self.request, self.published, link, name)[1]
+        return context
+
+
+class EditSerial(UserPassesTestMixin, UpdateView):
+    model = Serial
+    form_class = SerialsForm
+    template_name = 'controls/edit.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name="Admin_for_site").exists()
+
+    def get_context_data(self, **kwargs):
+        serial_slug = self.object.slug
+        return super().get_context_data(serial_slug=serial_slug, **kwargs)
+
+    def get_success_url(self):
+        return reverse("serials:info", kwargs={"slug": self.kwargs['slug']})
+
+    def form_valid(self, form):
+        if self.request.FILES.get('posterImage-clear') is not None and (
+                self.request.POST['posterLink'] != 'No_poster' or self.request.POST['posterLink'][:4] != "http"):
+            form.add_error('posterLink', 'Вы не можете оставить картинку пустой, не указав: "No_poster"')
+            return self.render_to_response(self.get_context_data(form=form))
+        if self.request.POST['posterLink'][:4] != "http" and self.request.POST['posterLink'] not in ["User_image",
+                                                                                                     "No_poster"]:
+            form.add_error('posterLink', 'Вы указали некорректную ссылку')
+            return self.render_to_response(self.get_context_data(form=form))
+        self.object = form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class AddSerial(UserPassesTestMixin, CreateView):
+    model = Serial
+    form_class = SerialsForm
+    template_name = 'controls/add.html'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name="Admin_for_site").exists()
+
+    def get_success_url(self):
+        return reverse("serials:info", kwargs={"slug": self.object.slug})
+
+    def post(self, request, *args, **kwargs):
+        slug = create_slug(slugify(self.request.POST["title"]))
+        self.object = Serial(slug=slug)
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        result = clean_posterLink(
+            {'posterImage': self.request.FILES.get('posterImage'), 'posterLink': self.request.POST['posterLink']})
+        if result == False:
+            form.add_error('posterLink', 'Вы указали некорректную ссылку')
+            return self.render_to_response(self.get_context_data(form=form))
+        return super().form_valid(form)
+
+
+class DeleteSerial(UserPassesTestMixin, DeleteView):
+    model = Serial
+    template_name = 'controls/delete.html'
+    success_url = reverse_lazy('controls:all')
+
+    def get_context_data(self, **kwargs):
+        serial_name = self.object.title
+        return super().get_context_data(serial_name=serial_name, **kwargs)
+
+    def test_func(self):
+        return self.request.user.groups.filter(name="Admin_for_site").exists()
+
+
+def create_slug(slug):
+    if Serial.objects.filter(slug=slug).exists():
+        slug += "-"
+        sl = 1
+        while Serial.objects.filter(slug=(slug + str(sl))).exists():
+            sl += 1
+        slug += str(sl)
+    return slug
 
 
 @login_required
@@ -119,61 +234,6 @@ def create_base(request):
                         one_serial.genres.add(i)
                     point += 1
     return render(request, "controls/result.html", {'point': point, "type": "create_serials"})
-
-
-@login_required
-@user_groups_Admin
-def update_serials(request):
-    pass
-
-
-@login_required
-@user_groups_Admin
-def update_all(request):
-    pass
-
-
-@login_required
-@user_groups_Admin
-def update_last(request):
-    pass
-
-
-@login_required
-@user_groups_Admin
-def add_serials(request):
-    if request.method == 'GET':
-        serials_form = SerialsForm()
-    elif request.method == 'POST':
-        serials_form = SerialsForm(data=request.POST, files=request.FILES)
-        if serials_form.is_valid():
-            print('Da')
-            # serials_form.save()
-    else:
-        serials_form = SerialsForm()
-    return render(request, 'base.html', {'form': serials_form.as_p()})
-    # title = request.POST.get('title')
-        # rating = request.POST.get('rating')
-        # serialYearStart = request.POST.get('serialYearStart')
-        # serialYearEnd = request.POST.get('serialYearEnd')
-        # countries = request.POST.get('countries')
-        # serialLink = request.POST.get('serialLink')
-        # posterLink = request.POST.get('posterLink')
-        # posterImage = request.POST.get('posterImage')
-        # genres = request.POST.get('genres')
-        # one_serial = Serial(title=(title), slug=(slugify(title) + "-"),
-        #                     rating=rating,
-        #                     serialYearStart=int(serialYearStart),
-        #                     serialYearEnd=int(serialYearEnd), countries=countries,
-        #                     serialLinkKino=serialLink,
-        #                     posterLink=posterLink)
-        # one_serial.save()
-
-
-@login_required
-@user_groups_Admin
-def delete_serials(request):
-    pass
 
 
 @login_required

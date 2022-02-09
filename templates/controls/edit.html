@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="del" style="float: right">
+        <label>Чтобы перейти к удалению, нажмите на кнопку:</label>
+        <a href="{% url 'controls:delete' slug=serial_slug %}"><input type="button" class="button2" value="К удалению"></a>
+    </div>
+    <div class="add">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="button2" value="Сохранить изменения">
+        </form>
+    </div>
+{% endblock %}

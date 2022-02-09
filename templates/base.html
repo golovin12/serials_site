@@ -1,4 +1,6 @@
 {% load static %}
+{% load filter_tag %}
+{% is_admin request as admin %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -36,6 +38,12 @@
                         <a href="{% url "subscribes:recommend" %}">Рекомендации для вас</a>
                     </li>
                     {% endif %}
+                    {% if admin %}
+                        <li {% if section == "my_recommend" %}class="selected"{% endif %}>
+                            <a href="{% url "controls:all" %}">ВСЕ</a>
+                        </li>
+                    {% endif %}
+
                 </ul>
             <span class="user">
                 {% if request.user.is_authenticated %}
@@ -57,17 +65,12 @@
                 {% else %}
                     <div id="profile_image">
                         <a href="{% url "authorization:edit_profile" %}">
-                            <img src="{% static 'img/noprofile.jpg' %}" class="profile_img" alt="Profile image">
+                            <img src="{% static 'img/noprofile.jpg' %}" border="3px solid #ccc" class="profile_img" alt="Profile image">
                         </a>
                     </div>
                 {% endif %}
             {% endif %}
         </div>
-{#        <form method="post">#}
-{#            {% csrf_token %}#}
-{#            {{ form }}#}
-{#            <input type="submit" class="button2" value="Добавить">#}
-{#        </form>#}
         <div id="content">
             {% block content %}{% endblock %}
         </div>

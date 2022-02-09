@@ -29,3 +29,9 @@ YEARS = ["Год выхода", "yearStart",
 @register.inclusion_tag('serials/filter_form.html')
 def filter_form(vihod=None, link='serials:categories', filt=3):
     return {'formes': [TAGS, ORDERS, YEARS][:filt], 'vihod': vihod, 'link': link}
+
+
+@register.simple_tag(name='is_admin')
+def is_admin(request):
+    return request.user.groups.filter(name="Admin_for_site").exists()
+

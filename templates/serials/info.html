@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
+{% load filter_tag %}
+{% is_admin request as admin %}
 {% block title %}Информация о сериале{% endblock %}
 {% block content %}
     <h1>Информация по сериалу {{ serial.title }}:</h1>
     <div class="serial_one">
             <div class="serial_poster">
-                {% if serial.posterLink != 'No_poster' and serial.posterLink != 'User_image' %}
+                {% if serial.posterLink != 'No_poster' %}
                     {% if serial.posterImage.name != '' %}
                         <img src="{{ serial.posterImage.url }}" border="3px solid #ccc" class="round2" align="left">
                     {% endif %}
@@ -14,6 +16,11 @@
                 {% endif %}
             </div>
         <div class="kinopoisk_info">
+            {% if admin %}
+                <div style="float: right">
+                    <a href="{% url 'controls:edit' slug=serial.slug %}"><input type="button" class = "button1" value="РЕДАКТИРОВАТЬ"/></a>
+                </div>
+            {% endif %}
             <div class="serial_rating">Рейтинг Кинопоиска: {{ serial.rating }}</div>
             {% if serial.serialYearEnd == 9999 %}
                 <div class="serial_year">Год: {{ serial.serialYearStart }}-...</div>
@@ -23,7 +30,7 @@
             <div class="serial_countries">Страна: {{ serial.countries }}</div>
             <div class="serial_rating"><a href="{{ serial.serialLinkKino }}">Ссылка на сериал в Кинопоиске.</a></div>
             <div class="serial_genres">
-                Жанр:{{ serial.get_genres }}
+                Жанр: {{ serial.get_genres }}
             </div>
         </div>
         <div class="myseria_info">
@@ -60,7 +67,8 @@
     <table class="similar_serials">
         {% for sim_ser in similar_serials %}
             <td>
-            <div class="similar_serial"><a class="serial_name_link" href='{% url 'serials:info' %}?name={{ sim_ser.slug }}'>
+{#            <div class="similar_serial"><a class="serial_name_link" href='{% url 'serials:info' %}?name={{ sim_ser.slug }}'>#}
+            <div class="similar_serial"><a class="serial_name_link" href='{% url 'serials:info' slug=sim_ser.slug %}'>
             {% if sim_ser.posterLink != 'No_poster' %}
                 {% if sim_ser.posterImage.name != '' %}
                     <img src="{{ sim_ser.posterImage.url }}" border="3px solid #ccc" class="sim_im" >
