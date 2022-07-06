@@ -5,8 +5,8 @@
 <html>
     <head>
         <title>{% block title %}{% endblock %}</title>
-        <link href="{% static "css/base.css" %}" rel="stylesheet" type="text/css">
-        <link rel="shortcut icon" href="{% static "img/favicon.ico" %}" type="image/x-icon"/>
+        <link href="{% static 'css/base.css' %}" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon"/>
     </head>
     <body>
         <style>
@@ -28,19 +28,19 @@
                         <a href="{% url 'serials:categories' %}">Все сериалы</a>
                     </li>
                     <li {% if section == "Поиск" %}class="selected"{% endif %}>
-                        <a href="{% url "serials:popular" %}">Популярные сериалы</a>
+                        <a href="{% url 'serials:popular' %}">Популярные сериалы</a>
                     </li>
                     {% if request.user.is_authenticated %}
                     <li {% if section == "my_serials" %}class="selected"{% endif %}>
-                        <a href="{% url "subscribes:subscribe" %}">Мои сериалы</a>
+                        <a href="{% url 'subscribes:subscribe' %}">Мои сериалы</a>
                     </li>
                     <li {% if section == "my_recommend" %}class="selected"{% endif %}>
-                        <a href="{% url "subscribes:recommend" %}">Рекомендации для вас</a>
+                        <a href="{% url 'subscribes:recommend' %}">Рекомендации для вас</a>
                     </li>
                     {% endif %}
                     {% if admin %}
                         <li {% if section == "my_recommend" %}class="selected"{% endif %}>
-                            <a href="{% url "controls:all" %}">ВСЕ</a>
+                            <a href="{% url 'controls:all' %}">ВСЕ</a>
                         </li>
                     {% endif %}
 
@@ -48,23 +48,23 @@
             <span class="user">
                 {% if request.user.is_authenticated %}
                     Привет {{ request.user.username }},
-                    <a href="{% url "authorization:logout" %}">Выйти</a>
+                    <a href="{% url 'authorization:logout' %}">Выйти</a>
                 {% else %}
-                    <a href="{% url "authorization:login" %}">Войти</a>
+                    <a href="{% url 'authorization:login' %}">Войти</a>
                 {% endif %}
             </span>
             {% if request.user.is_authenticated %}
                 {% if request.user.profile.photo %}
                     <div id="profile_image">
                         {% with request.user.profile.photo as im %}
-                            <a href="{% url "authorization:edit_profile" %}">
+                            <a href="{% url 'authorization:edit_profile' %}">
                                 <img src="{{ im.url }}" border="3px solid #ccc" alt="Profile image" class="profile_img">
                             </a>
                         {% endwith %}
                     </div>
                 {% else %}
                     <div id="profile_image">
-                        <a href="{% url "authorization:edit_profile" %}">
+                        <a href="{% url 'authorization:edit_profile' %}">
                             <img src="{% static 'img/noprofile.jpg' %}" border="3px solid #ccc" class="profile_img" alt="Profile image">
                         </a>
                     </div>

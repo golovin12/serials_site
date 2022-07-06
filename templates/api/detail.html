@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load filter_tag %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+{% with 'http://'|add:request.get_host|add:'/static/'|add:'img/noserial.jpg' as path_noserial %}
+{% thumbnail path_noserial "300x300" crop="center" as noserial %}
+    <h1>Информация по сериалу {{ serial.title }}:</h1>
+    <div class="serial_one">
+            <div class="serial_poster">
+                {% if posterLink != 'No_poster' %}
+                    {% if posterImage is not None %}
+                        <img src="{{ thumbnail }}" border="3px solid #ccc" class="round2" align="left">
+                    {% endif %}
+                {% else %}
+                    <img src="{{ noserial.url }}" border="3px solid #ccc" class="round2" align="left">
+                {% endif %}
+            </div>
+        <div class="kinopoisk_info">
+                <div style="float: right">
+                    <a href="{% url 'controls:edit' slug=slug %}"><input type="button" class = "button1" value="РЕДАКТИРОВАТЬ"/></a>
+                </div>
+            <div class="serial_rating">Рейтинг Кинопоиска: {{ rating }}</div>
+            {% if serial.serialYearEnd == 9999 %}
+                <div class="serial_year">Год: {{ serialYearStart }}-...</div>
+            {% else %}
+                <div class="serial_year">Год: {{ serialYearStart }}-{{ serialYearEnd }}</div>
+            {% endif %}
+            <div class="serial_countries">Страна: {{ countries }}</div>
+            <div class="serial_rating"><a href="{{ serialLinkKino }}">Ссылка на сериал в Кинопоиске.</a></div>
+            <div class="serial_genres">
+                Жанр: {% for genre in genres %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+            </div>
+        </div>
+        <div class="myseria_info">
+            {% if serial_info is not None and serial_info.LastSeriaurl != "#" %}
+                <div class="serial_myseria_description">Описание: {{ serial_info.MySeriadescription }}</div>
+                <div class="serial_myseria_rating">Рейтинг MySeria: {{ serial_info.MySeriarating }}</div>
+                <div class="serial_myseria_last">Последняя серия на MySeria: <a href="{{ serial_info.LastSeriaurl }}">{{ serial_info.LastSerianame }}</a></div>
+                <div class="serial_myseria_voices">Вышедшие озвучки на MySeria: {{ serial_info.LastSeriavoice }}</div>
+            {% endif %}
+        <div>
+    </div>
+{% endthumbnail %}
+{% endwith %}
+{% endblock %}

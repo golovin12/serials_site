@@ -33,10 +33,9 @@ def recommend(request):
         genres_ranking_slugs = [slug.decode("utf-8") for slug in genres_ranking]
         if len(genres_ranking_slugs) != 0:
             serials = Serial.objects.all()
-            similar_serials = serials.filter(published=True).filter(genres__slug__in=genres_ranking_slugs).exclude(
-                id__in=[i.id for i in profile.liked_serials.all()])
-            similar_serials = similar_serials.annotate(same_tags=Count('genres')) \
-                                  .order_by('-same_tags', '-rating')[:200]
+            similar_serials = serials.filter(published=True).filter(genres__slug__in=genres_ranking_slugs)
+            similar_serials = similar_serials.exclude(id__in=[i.id for i in profile.liked_serials.all()])
+            similar_serials = similar_serials.annotate(same_tags=Count('genres')).order_by('-same_tags', '-rating')[:200]
             if page is None:
                 page = 1
             serials = Paginator(similar_serials, 50)

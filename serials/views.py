@@ -46,7 +46,7 @@ def info(request, slug):
             if serial.posterLink != "No_poster" and serial.posterLink != "User_image":
                 image = requests.get(serial.posterLink).content
                 img = io.BytesIO(image)
-                serial.posterImage.save(f'{serial.slug}.img', img, save=True)
+                serial.posterImage.save(f'{serial.slug}.jpg', img, save=True)
         redis_instance.zincrby('serial_ranking', 1, serial.slug)
         similar_serials = similar_serials_ret(serial)
 
@@ -101,7 +101,7 @@ def info(request, slug):
             if serial.serialYearEnd == 9999:
                 serial_info = save_serial_info(serial)
             else:
-                # serial_info = save_serial_info(serial)
+                serial_info = save_serial_info(serial)
                 serial_info = get_object_or_404(Serial_info, serial=serial.id)
             similar_serials = similar_serials_ret(serial)
             return render(request, 'serials/info.html',
@@ -141,13 +141,13 @@ def popular_serials(request):
 
 # Выводит (и сохраняет в бд) дополнительную информацию
 def save_serial_info(serial):
-    if serial.pk == 631:
+    if serial.title == "Непобедимый":
         otvet = proverka_serials("Неуязвимый", str(serial.serialYearStart))
-    elif serial.pk == 2212:
+    elif serial.title == "Спаун":
         otvet = proverka_serials(serial.title, str(1997))
-    elif serial.pk == 500:
+    elif serial.title == "Любовь. Смерть. Роботы":
         otvet = proverka_serials("Любовь, смерть и роботы", str(serial.serialYearStart))
-    elif serial.pk == 3635:
+    elif serial.title == "Ванда/Вижн":
         otvet = proverka_serials("ВандаВижн", str(serial.serialYearStart))
     else:
         otvet = proverka_serials(serial.title, str(serial.serialYearStart))
@@ -157,7 +157,7 @@ def save_serial_info(serial):
                                   LastSeriaurl=otvet.get('last_seria_url'), LastSeriavoice=otvet.get('voices'))
     else:
         serial_info = Serial_info(serial=serial, MySeriadescription="Нет описания",
-                                  MySeriarating=0, LastSerianame="Сериал отсутсвует",
+                                  MySeriarating=0, LastSerianame="Сериал отсутствует",
                                   LastSeriaurl="#", LastSeriavoice="-")
     serial_info.save()
     return serial_info
@@ -177,7 +177,7 @@ def similar_serials_ret(serial):
 def proverka_serials(serial, yearStart):
     try:
         vihod = {}
-        host = "http://myseria.pro"
+        host = "http://fanseries.tv"
         user_ag = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36'
         otvet = [[], [], []]
         with requests.Session() as sess:
@@ -196,24 +196,25 @@ def proverka_serials(serial, yearStart):
                 otvet[1] = serial
             elif len(result) > 1:
                 c = 0
+                ind_ser = 0
                 for item in result:
-                    if item.find('div', class_='item-search-header').find('a').text.lower() == serial.lower():
+                    if item.find('div', class_='item-search-header').find('a').text.lower() == serial.lower() and item.find('div', class_='name-origin-search').text.find(yearStart) != -1:
                         c = 1
                         break
+                    ind_ser += 1
                 if c == 1:
-                    otvet[2] = result[0].find('div', class_='item-search-header').find('a').get('href')
+                    otvet[2] = result[ind_ser].find('div', class_='item-search-header').find('a').get('href')
                 else:
                     otvet[1] = serial
+
             if len(otvet[2]) != 0:
                 responce2 = sess.get(url=otvet[2], headers={'user-agent': user_ag})
                 soup2 = BeautifulSoup(responce2.text, "lxml")
                 infoMySeria = soup2.find('div', class_='serial-page-desc single')
-                topMySeria = infoMySeria.find('div', class_='small-12 medium-7 large-6 columns').find('ul',
-                                                                                                      class_='info-list').find_all(
-                    'div', class_='field-text')
-                for_search = infoMySeria.find('div', class_='small-12 medium-7 large-6 columns').find('ul',
-                                                                                                      class_='info-list').find_all(
-                    'div', class_='field-label')
+                topMySeria = infoMySeria.find('div', class_='small-12 medium-7 large-6 columns'
+                                                ).find('ul', class_='info-list').find_all('div', class_='field-text')
+                for_search = infoMySeria.find('div', class_='small-12 medium-7 large-6 columns'
+                                                ).find('ul', class_='info-list').find_all('div', class_='field-label')
                 for_search2 = 4
                 for_search3 = 2
                 for index, i in enumerate(for_search):

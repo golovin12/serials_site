@@ -3,7 +3,10 @@
     <div class="add">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form }}
+{#            {% for i in actions.POST.title %}#}
+{#                <p>{{ i }}</p>#}
+{#                {% for t in actions.POST.i %}{{t.0}}={{t.1}}{% endfor %}#}
+{#            {% endfor %}#}
             <input type="submit" class="button2" value="Добавить">
         </form>
     </div>

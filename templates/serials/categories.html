@@ -29,8 +29,9 @@
     <div class="page_serials">
         {% for serial in page_serials %}
             <div class="serial">
-{#                <a class="serial_name_link" href='{% url 'serials:info' %}?name={{ serial.slug }}'>#}
-                <a class="serial_name_link" href='{% url 'serials:info' slug=serial.slug %}'>
+{#                <a class="serial_name_link" href='{% url "serials:info" %}?name={{ serial.slug }}'>#}
+                {#<a class="serial_name_link" href='{% url "serials:info" slug=serial.slug %}'>#}
+                <a class="serial_name_link" href={{ serial.get_absolute_url }}>
                 {% if serial.posterLink != 'No_poster' %}
                     {% if serial.posterImage.name != '' %}
                         <img src="{{ serial.posterImage.url }}" border="3px solid #ccc" class="round" align="left">

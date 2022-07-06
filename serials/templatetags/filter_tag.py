@@ -1,7 +1,9 @@
 from django import template
 from taggit.models import Tag
 
+from sorl.thumbnail import get_thumbnail
 from ..forms import Search_Form
+from ..models import Serial
 
 register = template.Library()
 
@@ -34,4 +36,5 @@ def filter_form(vihod=None, link='serials:categories', filt=3):
 @register.simple_tag(name='is_admin')
 def is_admin(request):
     return request.user.groups.filter(name="Admin_for_site").exists()
+
 

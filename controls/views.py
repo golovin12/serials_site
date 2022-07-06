@@ -1,4 +1,5 @@
 import json
+import random
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -141,6 +142,12 @@ def create_base(request):
     with open('serials.json', 'r') as file:
         all_serials = json.load(file)
         point = 0
+
+        use_nicks = set()
+
+        save = []
+        genres_for_save = []
+
         for index1, i in enumerate(all_serials):
             page_serials = all_serials.get(i).get('itemsInfo')
             for index2, serial in enumerate(page_serials, start=1):
@@ -206,7 +213,11 @@ def create_base(request):
                         genres = ["боевик", "детектив"]
                     if coreData.get('id') == 402951:
                         genres = ["реальное ТВ"]
-                    one_serial = Serial(title=title, slug=slugify(title), rating=rating,
+                    slug = slugify(title[:])
+                    while slug in use_nicks:
+                        slug += str(random.randint(1000000, 10000000))
+                    use_nicks.add(slug)
+                    one_serial = Serial(title=title, slug=slug, rating=rating,
                                         serialYearStart=int(serialYearStart),
                                         serialYearEnd=int(serialYearEnd), countries=countries,
                                         serialLinkKino=serialLink,
@@ -218,21 +229,48 @@ def create_base(request):
                     #       f"Страны: {countries}\n"
                     #       f"Жанр: {genres}\n"
                     #       f"Ссылка на картинку: {posterLink}\n\n")
-                    one_serial.save()
-                    for i in genres:
-                        one_serial.genres.add(i)
+                    save.append(one_serial)
+                    genres_for_save.append(genres)
+                    if len(save) % 500 == 0:
+                        if point > 1000:
+                            Serial.objects.bulk_create(save)
+                            for index, gfs in enumerate(genres_for_save):
+                                for gen in gfs:
+                                    save[index].genres.add(gen)
+                        save = []
+                        genres_for_save = []
+                    # one_serial.save()
+                    # for i in genres:
+                    #     one_serial.genres.add(i)
                     point += 1
                 except Exception as ex:
-                    one_serial = Serial(title=(title), slug=(slugify(title) + "-" + str(index1 * 50 + index2)),
-                                        rating=rating,
-                                        serialYearStart=int(serialYearStart),
-                                        serialYearEnd=int(serialYearEnd), countries=countries,
-                                        serialLinkKino=serialLink,
-                                        posterLink=posterLink)
-                    one_serial.save()
-                    for i in genres:
-                        one_serial.genres.add(i)
+                    pass
+                    # one_serial = Serial(title=(title), slug=(slugify(title) + "-" + str(index1 * 50 + index2)),
+                    #                     rating=rating,
+                    #                     serialYearStart=int(serialYearStart),
+                    #                     serialYearEnd=int(serialYearEnd), countries=countries,
+                    #                     serialLinkKino=serialLink,
+                    #                     posterLink=posterLink)
+                    #
+                    # save.append(one_serial)
+                    # genres_for_save.append(genres)
+                    #
+                    # if len(save) % 500 == 0:
+                    #     Serial.objects.bulk_create(save)
+                    #     for index, gfs in enumerate(genres_for_save):
+                    #         for gen in gfs:
+                    #             save[index].genres.add(gen)
+                    #     save = []
+                    #     genres_for_save = []
+                    # one_serial.save()
+                    # for i in genres:
+                    #     one_serial.genres.add(i)
                     point += 1
+        if len(save) != 0:
+            Serial.objects.bulk_create(save)
+            for index, gfs in enumerate(genres_for_save):
+                for gen in gfs:
+                    save[index].genres.add(gen)
     return render(request, "controls/result.html", {'point': point, "type": "create_serials"})
 
 

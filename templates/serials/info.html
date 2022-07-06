@@ -42,7 +42,7 @@
             {% endif %}
         <div>
     </div>
-    {% if request.user.is_authenticated and serial.serialYearEnd == 9999%}
+    {% if request.user.is_authenticated and serial.serialYearEnd == 9999 or request.user.is_superuser %}
         <div class="update_info">
             <form method="POST">
                 {% csrf_token %}
@@ -67,8 +67,8 @@
     <table class="similar_serials">
         {% for sim_ser in similar_serials %}
             <td>
-{#            <div class="similar_serial"><a class="serial_name_link" href='{% url 'serials:info' %}?name={{ sim_ser.slug }}'>#}
-            <div class="similar_serial"><a class="serial_name_link" href='{% url 'serials:info' slug=sim_ser.slug %}'>
+{#            <div class="similar_serial"><a class="serial_name_link" href='{% url "serials:info" %}?name={{ sim_ser.slug }}'>#}
+            <div class="similar_serial"><a class="serial_name_link" href='{% url "serials:info" slug=sim_ser.slug %}'>
             {% if sim_ser.posterLink != 'No_poster' %}
                 {% if sim_ser.posterImage.name != '' %}
                     <img src="{{ sim_ser.posterImage.url }}" border="3px solid #ccc" class="sim_im" >

@@ -13,5 +13,5 @@
         {% csrf_token %}
         <p><input type="submit" class = "button2" value="Сохранить изменения"></p>
     </form>
-    <a href="{% url "authorization:password_change" %}">Изменить пароль</a>
+    <a href="{% url 'authorization:password_change' %}">Изменить пароль</a>
 {% endblock %}

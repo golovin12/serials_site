@@ -9,6 +9,7 @@ urlpatterns = [
     path('authorization/', include('authorization.urls', namespace='authorization')),
     path('subscribes/', include('subscribes.urls', namespace='subscribes')),
     path('serials/', include('serials.urls', namespace='serials')),
+    path('api/', include('drf.urls', namespace='api')),
     path('controls/', include('controls.urls', namespace='controls')),
     path('__debug__/', include('debug_toolbar.urls')),
 ]

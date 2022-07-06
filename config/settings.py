@@ -23,7 +23,12 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
 
     'taggit',
+    'taggit_serializer',
     'debug_toolbar',
+    'rest_framework',
+    'django_filters',
+    'sorl.thumbnail',
+    'sorl_thumbnail_serializer',
 
     'controls.apps.ControlsConfig',
     'serials.apps.SerialsConfig',
@@ -66,7 +71,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'serials',
-        'USER': 'postgres',
+        'USER': 'post_admin',
         'PASSWORD': keys_settings.DB_PASSWORD,
     }
 }
@@ -125,3 +130,10 @@ STATICFILES_DIRS = [
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ]
+# }

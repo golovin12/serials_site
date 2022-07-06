@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load filter_tag %}
+{% load static %}
+{% load thumbnail %}
+{% block content %}
+{% with 'http://'|add:request.get_host|add:'/static/'|add:'img/noload.jpg' as path_noload %}
+{% with 'http://'|add:request.get_host|add:'/static/'|add:'img/noserial.jpg' as path_noserial %}
+{% thumbnail path_noload "100x100" crop="center" as noload %}
+{% thumbnail path_noserial "100x100" crop="center" as noserial %}
+    <div class="page_serials">
+        {% for serial in results.serials %}
+            <div class="serial">
+                <a class="serial_name_link" href='{% url "api:info" slug=serial.slug %}'>
+                {% if serial.posterLink != 'No_poster' %}
+                    {% if serial.posterImage != None %}
+                        <img src="{{ serial.thumbnail }}" border="3px solid #ccc" class="round" align="left">
+                    {% else %}
+                        <img src="{{noload.url}}" border="3px solid #ccc" class="round" align="left">
+
+                    {% endif %}
+                {% else %}
+                    <img src="{{ noserial.url }}" border="3px solid #ccc" class="round" align="left">
+                {% endif %}
+                <div class="serial_name">{{ forloop.counter}}. {{ serial.title }}</a></div>
+                <div style="float: right">
+                    <a href="{% url 'controls:edit' slug=serial.slug %}"><input style="" type="button" class='button1' value="РЕДАКТИРОВАТЬ"/></a>
+                </div>
+                <div class="serial_rating">Рейтинг Кинопоиска: {{ serial.rating }}</div>
+                {% if serial.serialYearEnd == 9999 %}
+                <div class="serial_year">Год: {{ serial.serialYearStart }}-...</div>
+                {% else %}
+                    <div class="serial_year">Год: {{ serial.serialYearStart }}-{{ serial.serialYearEnd }}</div>
+                {% endif %}
+                <div class="serial_countries">Страна: {{ serial.countries }}</div>
+                <div class="serial_genres">
+                     Жанр: {% for genre in serial.genres %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endthumbnail %}
+{% endthumbnail %}
+{% endwith %}
+{% endwith %}
+{% endblock %}
