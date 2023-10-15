@@ -31,7 +31,7 @@ def categories(request):
 
 
 def info(request, slug):
-    # Вывод онформации о сериале
+    # Вывод информации о сериале
     if request.method == "GET":
         # slug = request.GET.get("name")
         slug = slug
@@ -51,7 +51,7 @@ def info(request, slug):
         similar_serials = similar_serials_ret(serial)
 
         if request.user.is_authenticated:
-            profile = get_object_or_404(Profile, user=request.user.id)
+            profile = get_object_or_404(Profile, user=request.user)
             if serial.slug in [i.slug for i in profile.liked_serials.all()]:
                 like = 'unlike'
             else:
@@ -177,7 +177,7 @@ def similar_serials_ret(serial):
 def proverka_serials(serial, yearStart):
     try:
         vihod = {}
-        host = "http://fanseries.tv"
+        host = "http://serialrun.ru"
         user_ag = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36'
         otvet = [[], [], []]
         with requests.Session() as sess:

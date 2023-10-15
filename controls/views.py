@@ -147,6 +147,7 @@ def create_base(request):
 
         save = []
         genres_for_save = []
+        serial_id = 0
 
         for index1, i in enumerate(all_serials):
             page_serials = all_serials.get(i).get('itemsInfo')
@@ -217,7 +218,8 @@ def create_base(request):
                     while slug in use_nicks:
                         slug += str(random.randint(1000000, 10000000))
                     use_nicks.add(slug)
-                    one_serial = Serial(title=title, slug=slug, rating=rating,
+                    serial_id += 1
+                    one_serial = Serial(id=serial_id, title=title, slug=slug, rating=rating,
                                         serialYearStart=int(serialYearStart),
                                         serialYearEnd=int(serialYearEnd), countries=countries,
                                         serialLinkKino=serialLink,
@@ -231,43 +233,14 @@ def create_base(request):
                     #       f"Ссылка на картинку: {posterLink}\n\n")
                     save.append(one_serial)
                     genres_for_save.append(genres)
-                    if len(save) % 500 == 0:
-                        if point > 1000:
-                            Serial.objects.bulk_create(save)
-                            for index, gfs in enumerate(genres_for_save):
-                                for gen in gfs:
-                                    save[index].genres.add(gen)
-                        save = []
-                        genres_for_save = []
-                    # one_serial.save()
-                    # for i in genres:
-                    #     one_serial.genres.add(i)
                     point += 1
                 except Exception as ex:
-                    pass
-                    # one_serial = Serial(title=(title), slug=(slugify(title) + "-" + str(index1 * 50 + index2)),
-                    #                     rating=rating,
-                    #                     serialYearStart=int(serialYearStart),
-                    #                     serialYearEnd=int(serialYearEnd), countries=countries,
-                    #                     serialLinkKino=serialLink,
-                    #                     posterLink=posterLink)
-                    #
-                    # save.append(one_serial)
-                    # genres_for_save.append(genres)
-                    #
-                    # if len(save) % 500 == 0:
-                    #     Serial.objects.bulk_create(save)
-                    #     for index, gfs in enumerate(genres_for_save):
-                    #         for gen in gfs:
-                    #             save[index].genres.add(gen)
-                    #     save = []
-                    #     genres_for_save = []
-                    # one_serial.save()
-                    # for i in genres:
-                    #     one_serial.genres.add(i)
-                    point += 1
+                    raise
         if len(save) != 0:
-            Serial.objects.bulk_create(save)
+            Serial.objects.bulk_create(save, update_conflicts=True, update_fields=['title', 'slug', 'rating',
+                                                                                   'serialYearStart', 'serialYearEnd',
+                                                                                   'countries', 'serialLinkKino',
+                                                                                   'posterLink'], unique_fields=['id'])
             for index, gfs in enumerate(genres_for_save):
                 for gen in gfs:
                     save[index].genres.add(gen)
