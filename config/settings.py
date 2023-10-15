@@ -71,7 +71,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'serials',
-        'USER': 'post_admin',
+        'USER': 'postgres',
         'PASSWORD': keys_settings.DB_PASSWORD,
     }
 }

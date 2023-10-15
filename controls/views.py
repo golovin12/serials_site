@@ -18,7 +18,7 @@ from .forms import SerialsForm
 # Декоратор, отвечающий за проверку принадлежности юзера к группе админа.
 def user_groups_Admin(func):
     def proverka(request):
-        if request.user.groups.filter(name="Admin_for_site").exists():
+        if request.user.is_superuser or request.user.groups.filter(name="Admin_for_site").exists():
             return func(request)
         else:
             raise Http404("У вас нет доступа.")

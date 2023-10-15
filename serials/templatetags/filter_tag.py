@@ -1,3 +1,5 @@
+from functools import cache
+
 from django import template
 from taggit.models import Tag
 
@@ -13,7 +15,14 @@ def search_form():
     return Search_Form()
 
 
-TAGS = ["Жанр", "category", [(i.name, i.slug) for i in Tag.objects.all().order_by("name")]]
+TAGS: list[any] = ["Жанр", "category"]
+
+
+@cache
+def get_tags():
+    return TAGS.append([(i.name, i.slug) for i in Tag.objects.all().order_by("name")])
+
+
 ORDERS = ["Сортировка", "order_by",
           [('Название(А-Я)', 'title'), ('Название(Я-А)', '-title'), ('Рейтинг(+)', 'rating'),
            ('Рейтинг(-)', '-rating'),
@@ -30,11 +39,9 @@ YEARS = ["Год выхода", "yearStart",
 
 @register.inclusion_tag('serials/filter_form.html')
 def filter_form(vihod=None, link='serials:categories', filt=3):
-    return {'formes': [TAGS, ORDERS, YEARS][:filt], 'vihod': vihod, 'link': link}
+    return {'formes': [get_tags(), ORDERS, YEARS][:filt], 'vihod': vihod, 'link': link}
 
 
 @register.simple_tag(name='is_admin')
 def is_admin(request):
     return request.user.groups.filter(name="Admin_for_site").exists()
-
-
